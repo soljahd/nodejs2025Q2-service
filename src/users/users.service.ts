@@ -6,18 +6,18 @@ import {
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
-import { User } from './entities/user.entity';
+import { User, UserWithoutPassword } from './entities/user.entity';
 import { DataService } from '../shared/data.service';
 
 @Injectable()
 export class UsersService {
   constructor(@Inject(DataService) private readonly dataService: DataService) {}
 
-  findAll(): Omit<User, 'password'>[] {
+  findAll(): UserWithoutPassword[] {
     return this.dataService.users.map((user) => this.excludePassword(user));
   }
 
-  findOne(id: string): Omit<User, 'password'> {
+  findOne(id: string): UserWithoutPassword {
     const user = this.dataService.users.find((user) => user.id === id);
     if (!user) {
       throw new NotFoundException('User not found');
@@ -25,7 +25,7 @@ export class UsersService {
     return this.excludePassword(user);
   }
 
-  create(createUserDto: CreateUserDto): Omit<User, 'password'> {
+  create(createUserDto: CreateUserDto): UserWithoutPassword {
     const user: User = {
       id: this.generateUUID(),
       login: createUserDto.login,
@@ -41,7 +41,7 @@ export class UsersService {
   updatePassword(
     id: string,
     updatePasswordDto: UpdatePasswordDto,
-  ): Omit<User, 'password'> {
+  ): UserWithoutPassword {
     const userIndex = this.dataService.users.findIndex(
       (user) => user.id === id,
     );
@@ -79,8 +79,8 @@ export class UsersService {
     this.dataService.users.splice(userIndex, 1);
   }
 
-  private excludePassword(user: User): Omit<User, 'password'> {
-    const userWithoutPassword: Omit<User, 'password'> = {
+  private excludePassword(user: User): UserWithoutPassword {
+    const userWithoutPassword: UserWithoutPassword = {
       id: user.id,
       login: user.login,
       version: user.version,
