@@ -1,10 +1,10 @@
 import { NestFactory } from '@nestjs/core';
 import { type INestApplication, ValidationPipe } from '@nestjs/common';
-import { SwaggerModule, type OpenAPIObject } from '@nestjs/swagger';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { loadEnvFile } from 'node:process';
-import { readFile } from 'node:fs/promises';
+import { writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { parse } from 'yaml';
+import { stringify } from 'yaml';
 import { AppModule } from './app.module';
 
 loadEnvFile();
@@ -12,19 +12,22 @@ loadEnvFile();
 const PORT = Number(process.env['PORT']);
 
 async function setupSwagger(app: INestApplication) {
-  try {
-    const yamlPath = join(__dirname, '../doc/api.yaml');
-    const yamlFile = await readFile(yamlPath, 'utf8');
-    const document = parse(yamlFile) as OpenAPIObject;
+  const config = new DocumentBuilder()
+    .setTitle('Home Library Service')
+    .setDescription('Home music library service')
+    .setVersion('1.0.0')
+    .build();
 
-    SwaggerModule.setup('doc', app, document);
-    console.log(
-      `Swagger documentation available at: http://localhost:${String(PORT)}/doc`,
-    );
-    return true;
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('doc', app, document);
+  console.log(
+    `Swagger documentation available at: http://localhost:${String(PORT)}/doc`,
+  );
+  try {
+    const yamlString = stringify(document);
+    await writeFile(join(__dirname, '../doc/api.yaml'), yamlString);
   } catch (error) {
-    console.error('Error setting up Swagger:', error);
-    return false;
+    console.error('Error updating /doc/api.yaml:', error);
   }
 }
 
