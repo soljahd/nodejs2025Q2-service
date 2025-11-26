@@ -1,10 +1,4 @@
-import {
-  Injectable,
-  NotFoundException,
-  BadRequestException,
-  Inject,
-} from '@nestjs/common';
-import { validate as uuidValidate } from 'uuid';
+import { Injectable, NotFoundException, Inject } from '@nestjs/common';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
 import { Track } from './entities/track.entity';
@@ -19,10 +13,6 @@ export class TracksService {
   }
 
   findOne(id: string): Track {
-    if (!uuidValidate(id)) {
-      throw new BadRequestException('ID is invalid (not uuid)');
-    }
-
     const track = this.dataService.tracks.find((track) => track.id === id);
     if (!track) {
       throw new NotFoundException('Track not found');
@@ -43,10 +33,6 @@ export class TracksService {
   }
 
   update(id: string, updateTrackDto: UpdateTrackDto): Track {
-    if (!uuidValidate(id)) {
-      throw new BadRequestException('ID is invalid (not uuid)');
-    }
-
     const trackIndex = this.dataService.tracks.findIndex(
       (track) => track.id === id,
     );
@@ -65,10 +51,6 @@ export class TracksService {
   }
 
   remove(id: string): void {
-    if (!uuidValidate(id)) {
-      throw new BadRequestException('ID is invalid (not uuid)');
-    }
-
     const trackIndex = this.dataService.tracks.findIndex(
       (track) => track.id === id,
     );

@@ -1,10 +1,4 @@
-import {
-  Injectable,
-  NotFoundException,
-  BadRequestException,
-  Inject,
-} from '@nestjs/common';
-import { validate as uuidValidate } from 'uuid';
+import { Injectable, NotFoundException, Inject } from '@nestjs/common';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 import { Artist } from './entities/artist.entity';
@@ -19,10 +13,6 @@ export class ArtistsService {
   }
 
   findOne(id: string): Artist {
-    if (!uuidValidate(id)) {
-      throw new BadRequestException('ID is invalid (not uuid)');
-    }
-
     const artist = this.dataService.artists.find((artist) => artist.id === id);
     if (!artist) {
       throw new NotFoundException('Artist not found');
@@ -41,10 +31,6 @@ export class ArtistsService {
   }
 
   update(id: string, updateArtistDto: UpdateArtistDto): Artist {
-    if (!uuidValidate(id)) {
-      throw new BadRequestException('ID is invalid (not uuid)');
-    }
-
     const artistIndex = this.dataService.artists.findIndex(
       (artist) => artist.id === id,
     );
@@ -63,10 +49,6 @@ export class ArtistsService {
   }
 
   remove(id: string): void {
-    if (!uuidValidate(id)) {
-      throw new BadRequestException('ID is invalid (not uuid)');
-    }
-
     const artistIndex = this.dataService.artists.findIndex(
       (artist) => artist.id === id,
     );

@@ -1,10 +1,4 @@
-import {
-  Injectable,
-  NotFoundException,
-  BadRequestException,
-  Inject,
-} from '@nestjs/common';
-import { validate as uuidValidate } from 'uuid';
+import { Injectable, NotFoundException, Inject } from '@nestjs/common';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 import { Album } from './entities/album.entity';
@@ -19,10 +13,6 @@ export class AlbumsService {
   }
 
   findOne(id: string): Album {
-    if (!uuidValidate(id)) {
-      throw new BadRequestException('ID is invalid (not uuid)');
-    }
-
     const album = this.dataService.albums.find((album) => album.id === id);
     if (!album) {
       throw new NotFoundException('Album not found');
@@ -42,10 +32,6 @@ export class AlbumsService {
   }
 
   update(id: string, updateAlbumDto: UpdateAlbumDto): Album {
-    if (!uuidValidate(id)) {
-      throw new BadRequestException('ID is invalid (not uuid)');
-    }
-
     const albumIndex = this.dataService.albums.findIndex(
       (album) => album.id === id,
     );
@@ -64,10 +50,6 @@ export class AlbumsService {
   }
 
   remove(id: string): void {
-    if (!uuidValidate(id)) {
-      throw new BadRequestException('ID is invalid (not uuid)');
-    }
-
     const albumIndex = this.dataService.albums.findIndex(
       (album) => album.id === id,
     );

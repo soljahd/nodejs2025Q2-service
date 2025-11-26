@@ -4,15 +4,14 @@ import {
   Post,
   Put,
   Delete,
-  Param,
   Body,
   HttpCode,
   HttpStatus,
-  BadRequestException,
 } from '@nestjs/common';
 import { TracksService } from './tracks.service';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
+import { IsUUIDParam } from 'src/shared/decorators/is-uuid-param.decorator';
 
 @Controller('track')
 export class TracksController {
@@ -24,27 +23,27 @@ export class TracksController {
   }
 
   @Get(':id')
-  getTrackById(@Param('id') id: string) {
+  getTrackById(@IsUUIDParam('id') id: string) {
     return this.tracksService.findOne(id);
   }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
   createTrack(@Body() createTrackDto: CreateTrackDto) {
-    if (!createTrackDto.name || typeof createTrackDto.duration !== 'number') {
-      throw new BadRequestException('Invalid required data');
-    }
     return this.tracksService.create(createTrackDto);
   }
 
   @Put(':id')
-  updateTrack(@Param('id') id: string, @Body() updateTrackDto: UpdateTrackDto) {
+  updateTrack(
+    @IsUUIDParam('id') id: string,
+    @Body() updateTrackDto: UpdateTrackDto,
+  ) {
     return this.tracksService.update(id, updateTrackDto);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  deleteTrack(@Param('id') id: string) {
+  deleteTrack(@IsUUIDParam('id') id: string) {
     this.tracksService.remove(id);
   }
 }

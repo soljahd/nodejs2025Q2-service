@@ -1,11 +1,9 @@
 import {
   Injectable,
   NotFoundException,
-  BadRequestException,
   ForbiddenException,
   Inject,
 } from '@nestjs/common';
-import { validate as uuidValidate } from 'uuid';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { User } from './entities/user.entity';
@@ -20,10 +18,6 @@ export class UsersService {
   }
 
   findOne(id: string): Omit<User, 'password'> {
-    if (!uuidValidate(id)) {
-      throw new BadRequestException('ID is invalid (not uuid)');
-    }
-
     const user = this.dataService.users.find((user) => user.id === id);
     if (!user) {
       throw new NotFoundException('User not found');
@@ -48,10 +42,6 @@ export class UsersService {
     id: string,
     updatePasswordDto: UpdatePasswordDto,
   ): Omit<User, 'password'> {
-    if (!uuidValidate(id)) {
-      throw new BadRequestException('ID is invalid (not uuid)');
-    }
-
     const userIndex = this.dataService.users.findIndex(
       (user) => user.id === id,
     );
@@ -78,10 +68,6 @@ export class UsersService {
   }
 
   remove(id: string): void {
-    if (!uuidValidate(id)) {
-      throw new BadRequestException('ID is invalid (not uuid)');
-    }
-
     const userIndex = this.dataService.users.findIndex(
       (user) => user.id === id,
     );

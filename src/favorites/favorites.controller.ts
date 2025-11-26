@@ -3,13 +3,13 @@ import {
   Get,
   Post,
   Delete,
-  Param,
   HttpCode,
   HttpStatus,
   UnprocessableEntityException,
   NotFoundException,
 } from '@nestjs/common';
 import { FavoritesService } from './favorites.service';
+import { IsUUIDParam } from 'src/shared/decorators/is-uuid-param.decorator';
 
 @Controller('favs')
 export class FavoritesController {
@@ -22,7 +22,7 @@ export class FavoritesController {
 
   @Post('track/:id')
   @HttpCode(HttpStatus.CREATED)
-  addTrackToFavorites(@Param('id') id: string) {
+  addTrackToFavorites(@IsUUIDParam('id') id: string) {
     const result = this.favoritesService.addTrack(id);
     if (!result) {
       throw new UnprocessableEntityException('Track not found');
@@ -32,7 +32,7 @@ export class FavoritesController {
 
   @Delete('track/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  removeTrackFromFavorites(@Param('id') id: string) {
+  removeTrackFromFavorites(@IsUUIDParam('id') id: string) {
     const result = this.favoritesService.removeTrack(id);
     if (!result) {
       throw new NotFoundException('Track not found in favorites');
@@ -41,7 +41,7 @@ export class FavoritesController {
 
   @Post('album/:id')
   @HttpCode(HttpStatus.CREATED)
-  addAlbumToFavorites(@Param('id') id: string) {
+  addAlbumToFavorites(@IsUUIDParam('id') id: string) {
     const result = this.favoritesService.addAlbum(id);
     if (!result) {
       throw new UnprocessableEntityException('Album not found');
@@ -51,7 +51,7 @@ export class FavoritesController {
 
   @Delete('album/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  removeAlbumFromFavorites(@Param('id') id: string) {
+  removeAlbumFromFavorites(@IsUUIDParam('id') id: string) {
     const result = this.favoritesService.removeAlbum(id);
     if (!result) {
       throw new NotFoundException('Album not found in favorites');
@@ -60,7 +60,7 @@ export class FavoritesController {
 
   @Post('artist/:id')
   @HttpCode(HttpStatus.CREATED)
-  addArtistToFavorites(@Param('id') id: string) {
+  addArtistToFavorites(@IsUUIDParam('id') id: string) {
     const result = this.favoritesService.addArtist(id);
     if (!result) {
       throw new UnprocessableEntityException('Artist not found');
@@ -70,7 +70,7 @@ export class FavoritesController {
 
   @Delete('artist/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  removeArtistFromFavorites(@Param('id') id: string) {
+  removeArtistFromFavorites(@IsUUIDParam('id') id: string) {
     const result = this.favoritesService.removeArtist(id);
     if (!result) {
       throw new NotFoundException('Artist not found in favorites');

@@ -1,5 +1,4 @@
-import { Injectable, BadRequestException, Inject } from '@nestjs/common';
-import { validate as uuidValidate } from 'uuid';
+import { Injectable, Inject } from '@nestjs/common';
 import { DataService } from '../shared/data.service';
 import { FavoritesResponse } from 'src/favorites/interfaces/favorites-response.interface';
 
@@ -24,10 +23,6 @@ export class FavoritesService {
   }
 
   addTrack(id: string): boolean {
-    if (!uuidValidate(id)) {
-      throw new BadRequestException('ID is invalid (not uuid)');
-    }
-
     const trackExists = this.dataService.tracks.some(
       (track) => track.id === id,
     );
@@ -42,10 +37,6 @@ export class FavoritesService {
   }
 
   removeTrack(id: string): boolean {
-    if (!uuidValidate(id)) {
-      throw new BadRequestException('ID is invalid (not uuid)');
-    }
-
     const index = this.dataService.favorites.tracks.indexOf(id);
     if (index > -1) {
       this.dataService.favorites.tracks.splice(index, 1);
@@ -55,10 +46,6 @@ export class FavoritesService {
   }
 
   addAlbum(id: string): boolean {
-    if (!uuidValidate(id)) {
-      throw new BadRequestException('ID is invalid (not uuid)');
-    }
-
     const albumExists = this.dataService.albums.some(
       (album) => album.id === id,
     );
@@ -73,10 +60,6 @@ export class FavoritesService {
   }
 
   removeAlbum(id: string): boolean {
-    if (!uuidValidate(id)) {
-      throw new BadRequestException('ID is invalid (not uuid)');
-    }
-
     const index = this.dataService.favorites.albums.indexOf(id);
     if (index > -1) {
       this.dataService.favorites.albums.splice(index, 1);
@@ -86,10 +69,6 @@ export class FavoritesService {
   }
 
   addArtist(id: string): boolean {
-    if (!uuidValidate(id)) {
-      throw new BadRequestException('ID is invalid (not uuid)');
-    }
-
     const artistExists = this.dataService.artists.some(
       (artist) => artist.id === id,
     );
@@ -104,10 +83,6 @@ export class FavoritesService {
   }
 
   removeArtist(id: string): boolean {
-    if (!uuidValidate(id)) {
-      throw new BadRequestException('ID is invalid (not uuid)');
-    }
-
     const index = this.dataService.favorites.artists.indexOf(id);
     if (index > -1) {
       this.dataService.favorites.artists.splice(index, 1);
