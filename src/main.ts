@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import { type INestApplication } from '@nestjs/common';
+import { type INestApplication, ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, type OpenAPIObject } from '@nestjs/swagger';
 import { loadEnvFile } from 'node:process';
 import { readFile } from 'node:fs/promises';
@@ -32,6 +32,13 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   await setupSwagger(app);
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+    }),
+  );
 
   await app.listen(PORT);
   console.log(`Application is running on: http://localhost:${String(PORT)}`);
