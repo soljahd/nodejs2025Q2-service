@@ -20,7 +20,7 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { User } from './entities/user.entity';
-import { IsUUIDParam } from 'src/shared/decorators/is-uuid-param.decorator';
+import { IsUUIDParam } from '../shared/decorators/is-uuid-param.decorator';
 
 @ApiTags('Users')
 @ApiBearerAuth()
@@ -150,7 +150,7 @@ export class UsersController {
     status: 404,
     description: 'User not found',
   })
-  deleteUser(@IsUUIDParam('id') id: string) {
-    this.usersService.remove(id);
+  async deleteUser(@IsUUIDParam('id') id: string) {
+    await this.usersService.remove(id);
   }
 }

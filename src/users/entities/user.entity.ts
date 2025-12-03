@@ -31,13 +31,13 @@ export class User {
     description: 'User creation timestamp',
     example: 1719501234567,
   })
-  createdAt: number;
+  createdAt: bigint;
 
   @ApiProperty({
     description: 'User last update timestamp',
     example: 1719501234567,
   })
-  updatedAt: number;
+  updatedAt: bigint;
 }
 
 export class UserWithoutPassword {
