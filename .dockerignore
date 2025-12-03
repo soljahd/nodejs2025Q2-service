@@ -1,0 +1,14 @@
+node_modules
+dist
+.env*
+.git
+.github
+Dockerfile*
+docker-compose*
+.gitignore
+jest.config.json
+nest-cli.json
+eslint.config.mjs
+prettier.config.mjs
+README.md
+test

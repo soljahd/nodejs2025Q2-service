@@ -1,0 +1,44 @@
+services:
+  postgres: 
+    image: soljahd/music-library-db
+    container_name: music_db
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    expose:
+      - "${DB_PORT}"
+    ports:
+      - "${DB_PORT}:${DB_PORT}"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - postgres_logs:/var/log/postgresql
+    networks:
+      - music_network
+    restart: unless-stopped
+    command: -p ${DB_PORT}
+
+  app:
+    image: soljahd/music-library-app
+    container_name: music_app
+    environment:
+      DATABASE_URL: postgresql://${DB_USER}:${DB_PASSWORD}@postgres:${DB_PORT}/${DB_NAME}
+      PORT: ${PORT}
+    ports:
+      - "${PORT}:${PORT}"
+    volumes:
+      - ./src:/app/src
+    depends_on:
+      - postgres
+    networks:
+      - music_network
+    restart: unless-stopped
+
+networks:
+  music_network:
+    driver: bridge
+    name: music_network
+
+volumes:
+  postgres_data:
+  postgres_logs:

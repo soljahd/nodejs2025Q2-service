@@ -1,5 +1,5 @@
 FROM postgres:16-alpine
 
-COPY prisma/migrations /docker-entrypoint-initdb.d/migrations/
+COPY prisma/migrations/*/*.sql /docker-entrypoint-initdb.d/
 
-EXPOSE 5432
+EXPOSE $PORT
