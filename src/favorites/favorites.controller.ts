@@ -17,7 +17,7 @@ import {
 } from '@nestjs/swagger';
 import { FavoritesService } from './favorites.service';
 import { FavoritesResponse } from './interfaces/favorites-response.interface';
-import { IsUUIDParam } from 'src/shared/decorators/is-uuid-param.decorator';
+import { IsUUIDParam } from '../shared/decorators/is-uuid-param.decorator';
 
 @ApiTags('Favorites')
 @ApiBearerAuth()
@@ -33,10 +33,9 @@ export class FavoritesController {
   @ApiResponse({
     status: 200,
     description: 'Favorites retrieved successfully',
-    type: Object,
   })
-  getAllFavorites(): FavoritesResponse {
-    return this.favoritesService.findAll();
+  async getAllFavorites(): Promise<FavoritesResponse> {
+    return await this.favoritesService.findAll();
   }
 
   @Post('track/:id')
@@ -63,12 +62,11 @@ export class FavoritesController {
     status: 422,
     description: 'Track not found - cannot add to favorites',
   })
-  addTrackToFavorites(@IsUUIDParam('id') id: string) {
-    const result = this.favoritesService.addTrack(id);
+  async addTrackToFavorites(@IsUUIDParam('id') id: string) {
+    const result = await this.favoritesService.addTrack(id);
     if (!result) {
       throw new UnprocessableEntityException('Track not found');
     }
-    return result;
   }
 
   @Delete('track/:id')
@@ -95,8 +93,8 @@ export class FavoritesController {
     status: 404,
     description: 'Track not found in favorites',
   })
-  removeTrackFromFavorites(@IsUUIDParam('id') id: string) {
-    const result = this.favoritesService.removeTrack(id);
+  async removeTrackFromFavorites(@IsUUIDParam('id') id: string) {
+    const result = await this.favoritesService.removeTrack(id);
     if (!result) {
       throw new NotFoundException('Track not found in favorites');
     }
@@ -126,12 +124,11 @@ export class FavoritesController {
     status: 422,
     description: 'Album not found - cannot add to favorites',
   })
-  addAlbumToFavorites(@IsUUIDParam('id') id: string) {
-    const result = this.favoritesService.addAlbum(id);
+  async addAlbumToFavorites(@IsUUIDParam('id') id: string) {
+    const result = await this.favoritesService.addAlbum(id);
     if (!result) {
       throw new UnprocessableEntityException('Album not found');
     }
-    return result;
   }
 
   @Delete('album/:id')
@@ -158,8 +155,8 @@ export class FavoritesController {
     status: 404,
     description: 'Album not found in favorites',
   })
-  removeAlbumFromFavorites(@IsUUIDParam('id') id: string) {
-    const result = this.favoritesService.removeAlbum(id);
+  async removeAlbumFromFavorites(@IsUUIDParam('id') id: string) {
+    const result = await this.favoritesService.removeAlbum(id);
     if (!result) {
       throw new NotFoundException('Album not found in favorites');
     }
@@ -189,12 +186,11 @@ export class FavoritesController {
     status: 422,
     description: 'Artist not found - cannot add to favorites',
   })
-  addArtistToFavorites(@IsUUIDParam('id') id: string) {
-    const result = this.favoritesService.addArtist(id);
+  async addArtistToFavorites(@IsUUIDParam('id') id: string) {
+    const result = await this.favoritesService.addArtist(id);
     if (!result) {
       throw new UnprocessableEntityException('Artist not found');
     }
-    return result;
   }
 
   @Delete('artist/:id')
@@ -221,8 +217,8 @@ export class FavoritesController {
     status: 404,
     description: 'Artist not found in favorites',
   })
-  removeArtistFromFavorites(@IsUUIDParam('id') id: string) {
-    const result = this.favoritesService.removeArtist(id);
+  async removeArtistFromFavorites(@IsUUIDParam('id') id: string) {
+    const result = await this.favoritesService.removeArtist(id);
     if (!result) {
       throw new NotFoundException('Artist not found in favorites');
     }
