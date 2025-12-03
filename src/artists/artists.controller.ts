@@ -147,7 +147,7 @@ export class ArtistsController {
     status: 404,
     description: 'Artist not found',
   })
-  deleteArtist(@IsUUIDParam('id') id: string) {
-    this.artistsService.remove(id);
+  async deleteArtist(@IsUUIDParam('id') id: string) {
+    await this.artistsService.remove(id);
   }
 }
