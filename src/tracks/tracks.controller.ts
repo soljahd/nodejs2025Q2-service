@@ -20,7 +20,7 @@ import { TracksService } from './tracks.service';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
 import { Track } from './entities/track.entity';
-import { IsUUIDParam } from 'src/shared/decorators/is-uuid-param.decorator';
+import { IsUUIDParam } from '../shared/decorators/is-uuid-param.decorator';
 
 @ApiTags('Tracks')
 @ApiBearerAuth()
@@ -148,7 +148,7 @@ export class TracksController {
     status: 404,
     description: 'Track not found',
   })
-  deleteTrack(@IsUUIDParam('id') id: string) {
-    this.tracksService.remove(id);
+  async deleteTrack(@IsUUIDParam('id') id: string) {
+    await this.tracksService.remove(id);
   }
 }
