@@ -10,6 +10,8 @@
     "npm": ">=10.9.2"
   },
   "scripts": {
+    "docker:scan:db": "docker scout cves soljahd/music-library-db:latest --only-severity critical,high --exit-code",
+    "docker:scan:app": "docker scout cves soljahd/music-library-app:latest --only-severity critical,high --exit-code",
     "prebuild": "rimraf dist",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
