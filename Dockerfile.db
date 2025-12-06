@@ -1,0 +1,9 @@
+FROM postgres:16-alpine
+
+RUN mkdir -p /var/log/postgresql \
+  && chown -R postgres:postgres /var/log/postgresql \
+  && chmod 775 /var/log/postgresql
+
+COPY prisma/migrations/*/*.sql /docker-entrypoint-initdb.d/
+
+EXPOSE $PORT

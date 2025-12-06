@@ -74,7 +74,7 @@ export class AlbumsController {
   @ApiResponse({ status: 204, description: 'Album deleted' })
   @ApiResponse({ status: 400, description: 'Invalid UUID' })
   @ApiResponse({ status: 404, description: 'Album not found' })
-  deleteAlbum(@IsUUIDParam('id') id: string) {
-    this.albumsService.remove(id);
+  async eleteAlbum(@IsUUIDParam('id') id: string) {
+    await this.albumsService.remove(id);
   }
 }

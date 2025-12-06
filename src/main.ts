@@ -1,13 +1,10 @@
 import { NestFactory } from '@nestjs/core';
 import { type INestApplication, ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { loadEnvFile } from 'node:process';
 import { writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { stringify } from 'yaml';
 import { AppModule } from './app.module';
-
-loadEnvFile();
 
 const PORT = Number(process.env['PORT']);
 
