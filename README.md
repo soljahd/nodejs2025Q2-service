@@ -27,6 +27,12 @@ Create a `.env` file in the root directory (copy from .env.example):
 cp .env.example .env
 ```
 
+## Generating Prisma Client
+
+```bash
+npx prisma generate
+```
+
 ## Running Application
 
 ### Option 1: Docker Deployment (Recommended)
