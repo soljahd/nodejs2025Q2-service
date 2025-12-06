@@ -13,6 +13,12 @@ git clone https://github.com/soljahd/nodejs2025Q2-service.git
 cd nodejs2025Q2-service
 ```
 
+## Installing NPM modules
+
+```bash
+npm ci
+```
+
 ## Environment Configuration
 
 Create a `.env` file in the root directory (copy from .env.example):
@@ -127,12 +133,6 @@ The application uses environment variables from `.env` file:
 For development with Docker, the app service mounts the local `./src` directory, allowing live code updates without rebuilding the container.
 
 ### Option 2: Local Development (Without Docker)
-
-#### Installing NPM modules
-
-```bash
-npm ci
-```
 
 #### Database Setup
 

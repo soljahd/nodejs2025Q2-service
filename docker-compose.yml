@@ -15,14 +15,14 @@ services:
       - "${DB_PORT}:${DB_PORT}"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - postgres_logs:/var/lib/postgresql/pg_log
+      - postgres_logs:/var/log/postgresql
     networks:
       - music_network
     restart: unless-stopped
     command: >
       -p ${DB_PORT}
       -c logging_collector=on
-      -c log_directory='/var/lib/postgresql/pg_log'
+      -c log_directory='/var/log/postgresql'
       -c log_filename='postgresql-%Y-%m-%d_%H%M%S.log'
       -c log_statement='all'
       -c log_connections=on
