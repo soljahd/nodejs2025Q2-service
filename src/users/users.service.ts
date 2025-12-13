@@ -3,6 +3,7 @@ import {
   NotFoundException,
   ForbiddenException,
 } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { User, UserWithoutPassword } from './entities/user.entity';
@@ -10,6 +11,8 @@ import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class UsersService {
+  private readonly saltRounds = Number(process.env.CRYPT_SALT ?? 10);
+
   constructor(private readonly prisma: PrismaService) {}
 
   async findAll(): Promise<UserWithoutPassword[]> {
@@ -31,6 +34,14 @@ export class UsersService {
     return this.serializeUser(user);
   }
 
+  async findByIdFull(id: string) {
+    return this.prisma.user.findUnique({ where: { id } });
+  }
+
+  async findByLogin(login: string) {
+    return this.prisma.user.findUnique({ where: { login } });
+  }
+
   async create(createUserDto: CreateUserDto): Promise<UserWithoutPassword> {
     const existingUser = await this.prisma.user.findUnique({
       where: { login: createUserDto.login },
@@ -40,12 +51,13 @@ export class UsersService {
       return this.serializeUser(existingUser);
     }
 
+    const hashed = await bcrypt.hash(createUserDto.password, this.saltRounds);
     const currentTime = Date.now();
 
     const user = await this.prisma.user.create({
       data: {
         login: createUserDto.login,
-        password: createUserDto.password,
+        password: hashed,
         version: 1,
         createdAt: currentTime,
         updatedAt: currentTime,
@@ -68,14 +80,21 @@ export class UsersService {
       throw new NotFoundException('User not found');
     }
 
-    if (user.password !== updatePasswordDto.oldPassword) {
-      throw new ForbiddenException('Old password is incorrect');
-    }
+    const valid = await bcrypt.compare(
+      updatePasswordDto.oldPassword,
+      user.password,
+    );
+    if (!valid) throw new ForbiddenException('Old password is incorrect');
+
+    const newHash = await bcrypt.hash(
+      updatePasswordDto.newPassword,
+      this.saltRounds,
+    );
 
     const updatedUser = await this.prisma.user.update({
       where: { id },
       data: {
-        password: updatePasswordDto.newPassword,
+        password: newHash,
         version: user.version + 1,
         updatedAt: Date.now(),
       },
@@ -83,6 +102,17 @@ export class UsersService {
     });
 
     return this.serializeUser(updatedUser);
+  }
+
+  async setRefreshToken(userId: string, refreshToken: string | null) {
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        refreshToken,
+        version: { increment: 1 },
+        updatedAt: Date.now(),
+      },
+    });
   }
 
   async remove(id: string): Promise<void> {
@@ -106,6 +136,7 @@ export class UsersService {
       version: true,
       createdAt: true,
       updatedAt: true,
+      refreshToken: true,
     };
   }
 
@@ -116,6 +147,7 @@ export class UsersService {
       version: user.version,
       createdAt: Number(user.createdAt),
       updatedAt: Number(user.updatedAt),
+      refreshToken: user.refreshToken,
     };
   }
 }
