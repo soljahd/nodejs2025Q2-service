@@ -9,6 +9,7 @@ import * as jwt from 'jsonwebtoken';
 import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
 import { JwtPayload } from '../interfaces/tokens.interface';
 import { Request } from 'express';
+import { isJwtPayload } from '../utils/isJwtPayload';
 
 @Injectable()
 export class JwtAuthGuard {
@@ -48,7 +49,7 @@ export class JwtAuthGuard {
     try {
       const decoded = jwt.verify(token, this.accessSecret);
 
-      if (!this.isJwtPayload(decoded)) {
+      if (!isJwtPayload(decoded)) {
         throw new ForbiddenException('Invalid token payload shape');
       }
 
@@ -59,14 +60,5 @@ export class JwtAuthGuard {
       }
       throw new ForbiddenException('Invalid access token');
     }
-  }
-
-  private isJwtPayload(data: unknown): data is JwtPayload {
-    return (
-      typeof data === 'object' &&
-      data !== null &&
-      'userId' in data &&
-      'login' in data
-    );
   }
 }

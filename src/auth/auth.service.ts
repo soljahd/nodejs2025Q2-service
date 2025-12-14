@@ -11,6 +11,7 @@ import { SignupDto } from './dto/signup.dto';
 import { LoginDto } from './dto/login.dto';
 import { Tokens, JwtPayload } from './interfaces/tokens.interface';
 import { User } from '../users/entities/user.entity';
+import { isJwtPayload } from './utils/isJwtPayload';
 
 @Injectable()
 export class AuthService {
@@ -76,21 +77,11 @@ export class AuthService {
     await this.usersService.setRefreshToken(userId, null);
   }
 
-  validateAccessToken(token: string): JwtPayload | null {
-    try {
-      const decoded = jwt.verify(token, this.accessSecret);
-
-      return this.isJwtPayload(decoded) ? decoded : null;
-    } catch {
-      return null;
-    }
-  }
-
   private verifyRefreshToken(token: string): JwtPayload {
     try {
       const decoded = jwt.verify(token, this.refreshSecret);
 
-      if (!this.isJwtPayload(decoded)) {
+      if (!isJwtPayload(decoded)) {
         throw new ForbiddenException('Invalid refresh payload');
       }
 
@@ -124,14 +115,5 @@ export class AuthService {
     } as jwt.SignOptions);
 
     return { accessToken, refreshToken };
-  }
-
-  private isJwtPayload(data: unknown): data is JwtPayload {
-    return (
-      typeof data === 'object' &&
-      data !== null &&
-      'userId' in data &&
-      'login' in data
-    );
   }
 }

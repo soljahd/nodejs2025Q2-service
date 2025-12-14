@@ -11,14 +11,11 @@ import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { SignupDto } from './dto/signup.dto';
 import { LoginDto } from './dto/login.dto';
+import { LogoutDto } from './dto/logout.dto';
 import { RefreshDto } from './dto/refresh.dto';
 import { Tokens } from './interfaces/tokens.interface';
 import { UserWithoutPassword } from '../users/entities/user.entity';
 import { Public } from './decorators/public.decorator';
-
-class LogoutDto {
-  userId: string;
-}
 
 @ApiTags('Auth')
 @Controller('auth')
