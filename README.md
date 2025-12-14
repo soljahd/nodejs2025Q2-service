@@ -133,6 +133,13 @@ The application uses environment variables from `.env` file:
 - `DB_NAME` - Database name (default: music_db)
 - `DB_PORT` - PostgreSQL port (default: 5432)
 - `DATABASE_URL` - Automatically constructed in docker-compose
+- `CRYPT_SALT` - Salt rounds for bcrypt password hashing (default: 10)
+- `JWT_SECRET_KEY` - Secret key for signing access tokens (required)
+- `JWT_SECRET_REFRESH_KEY` - Secret key for signing refresh tokens (required)
+- `TOKEN_EXPIRE_TIME` - Access token expiration time (default: 1h)
+- `TOKEN_REFRESH_EXPIRE_TIME` - Refresh token expiration time (default: 24h)
+- `LOG_LEVEL` - Logging level: fatal, error, warn, log, debug, verbose (default: log)
+- `MAX_LOG_FILE_SIZE_KB` - Maximum log file size in kilobytes before rotation (default: 1024)
 
 #### Docker Development Workflow
 
@@ -163,10 +170,10 @@ in your browser OpenAPI documentation by typing http://localhost:4000/doc.
 
 ```bash
 # Run all tests
-npm run test
+npm run test:auth
 
 # Run specific test suite
-npm run test -- <path/to/test/file>
+npm run test:auth -- <path/to/test/file>
 ```
 
 ## Code Quality
@@ -203,14 +210,24 @@ npm run docker:scan:app
 
 ```
 src/
-├── albums/          # Album module (entities, DTOs, services, controllers)
-├── artists/         # Artist module
-├── tracks/          # Track module
-├── users/           # User module
-├── favorites/       # Favorites module
-├── shared/          # Shared utilities and services
-├── prisma/          # Database ORM configuration
-└── app.module.ts    # Main application module
+├── albums/             # Album module
+├── artists/            # Artist module
+├── tracks/             # Track module
+├── users/              # User module
+├── favorites/          # Favorites module
+├── auth/               # Authentication module
+├── shared/             # Shared utilities and decorators
+├── prisma/             # Database ORM configuration
+├── logging/            # Logging module
+├── filters/            # Exception filters
+├── interceptors/       # HTTP interceptors
+├── setup/              # Application setup and configuration
+├── config/             # App configuration (swagger, app config)
+├── types/              # TypeScript type declarations
+├── app.controller.ts   # Main application controller
+├── app.module.ts       # Main application module
+├── app.service.ts      # Main application service
+└── main.ts             # Entry point
 ```
 
 ## Features
