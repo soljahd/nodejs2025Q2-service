@@ -38,6 +38,13 @@ export class User {
     example: 1719501234567,
   })
   updatedAt: bigint;
+
+  @ApiProperty({
+    description: 'Refresh token for authentication',
+    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+    writeOnly: true,
+  })
+  refreshToken: string | null;
 }
 
 export class UserWithoutPassword {
@@ -71,4 +78,11 @@ export class UserWithoutPassword {
     example: 1719501234567,
   })
   updatedAt: number;
+
+  @ApiProperty({
+    description: 'Refresh token for authentication',
+    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+    writeOnly: true,
+  })
+  refreshToken: string | null;
 }
