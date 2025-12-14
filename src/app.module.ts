@@ -10,9 +10,11 @@ import { FavoritesModule } from './favorites/favorites.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
+import { LoggingModule } from './logging/logging.module';
 
 @Module({
   imports: [
+    LoggingModule,
     AuthModule,
     PrismaModule,
     UsersModule,

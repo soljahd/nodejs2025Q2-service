@@ -1,46 +1,29 @@
 import { NestFactory } from '@nestjs/core';
-import { type INestApplication, ValidationPipe } from '@nestjs/common';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { writeFile } from 'node:fs/promises';
-import { join } from 'node:path';
-import { stringify } from 'yaml';
 import { AppModule } from './app.module';
-
-const PORT = Number(process.env['PORT']);
-
-async function setupSwagger(app: INestApplication) {
-  const config = new DocumentBuilder()
-    .setTitle('Home Library Service')
-    .setDescription('Home music library service')
-    .setVersion('1.0.0')
-    .build();
-
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('doc', app, document);
-  console.log(
-    `Swagger documentation available at: http://localhost:${String(PORT)}/doc`,
-  );
-  try {
-    const yamlString = stringify(document);
-    await writeFile(join(__dirname, '../doc/api.yaml'), yamlString);
-  } catch (error) {
-    console.error('Error updating /doc/api.yaml:', error);
-  }
-}
+import { LoggingService } from './logging/logging.service';
+import { setupExceptionHandlers } from './setup/exception-handlers.setup';
+import { setupApplication } from './setup/app.setup';
+import { setupSwagger } from './setup/swagger.setup';
+import { appConfig } from './config/app.config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const loggingService = app.get(LoggingService);
 
-  await setupSwagger(app);
+  setupExceptionHandlers(loggingService);
+  setupApplication(app);
 
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      forbidNonWhitelisted: true,
-    }),
+  await setupSwagger(app, appConfig.port, loggingService);
+
+  await app.listen(appConfig.port);
+
+  loggingService.log(
+    `Application is running on: http://localhost:${String(appConfig.port)}`,
+    'Bootstrap',
   );
-
-  await app.listen(PORT);
-  console.log(`Application is running on: http://localhost:${String(PORT)}`);
 }
-void bootstrap();
+
+bootstrap().catch((error: unknown) => {
+  console.error('Failed to bootstrap application:', error);
+  process.exit(1);
+});
