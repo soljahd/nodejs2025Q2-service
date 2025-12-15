@@ -6,6 +6,9 @@ import {
   HttpStatus,
   UsePipes,
   ValidationPipe,
+  BadRequestException,
+  UnauthorizedException,
+  Req,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
@@ -53,6 +56,7 @@ export class AuthController {
   }
 
   @Post('refresh')
+  @Public()
   @HttpCode(HttpStatus.OK)
   @UsePipes(new ValidationPipe())
   @ApiOperation({ summary: 'Refresh access token' })
@@ -60,7 +64,19 @@ export class AuthController {
   @ApiResponse({ status: 200, description: 'Tokens refreshed' })
   @ApiResponse({ status: 401, description: 'Refresh token is required' })
   @ApiResponse({ status: 403, description: 'Invalid or expired refresh token' })
-  async refresh(@Body() dto: RefreshDto): Promise<Tokens> {
+  async refresh(@Body() dto: RefreshDto, @Req() req: Request): Promise<Tokens> {
+    if (!req.body) {
+      throw new UnauthorizedException(
+        'Refresh token is required in request body',
+      );
+    }
+
+    if (!dto.refreshToken) {
+      throw new BadRequestException(
+        'Refresh token is required in request body',
+      );
+    }
+
     return this.authService.refresh(dto.refreshToken);
   }
 

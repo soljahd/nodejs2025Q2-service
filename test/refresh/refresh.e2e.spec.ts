@@ -1,3 +1,4 @@
+// @ts-nocheck
 import request from '../lib/request';
 import { authRoutes } from '../endpoints';
 import {
